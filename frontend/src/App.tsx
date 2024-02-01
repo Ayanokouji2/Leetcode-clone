@@ -4,11 +4,19 @@ import './App.css';
 import { Signin } from './Components/SignIn';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './utils/firebase';
-import { useRecoilState } from 'recoil';
+import { RecoilRoot, useRecoilState } from 'recoil';
 import { userAtom } from './store/atmos/users';
 
 function App() {
-    const [user,setUser] = useRecoilState(userAtom);
+    return(
+        <RecoilRoot >
+            <StoreApp/>
+        </RecoilRoot>
+    )
+}
+
+function StoreApp() {
+    const [user, setUser] = useRecoilState(userAtom);
 
     useEffect(() => {
         onAuthStateChanged(auth, function (user) {
@@ -19,26 +27,27 @@ function App() {
                         email: user.email
                     }
                 });
-                console.log('This is the user: ', user);
+                // console.log('This is the user: ', user);
             } else {
                 setUser({
                     loading: true
                 });
-                console.log('There is no logged in user');
+                // console.log('There is no logged in user');
             }
         });
     }, []);
 
-    if(user){
-        
+    if(user.loading){
+        return <div>isLoading...!!</div>
     }
+    if (!user.user) {
+        return <div>{<Signin/>}</div>
+    }
+
     return (
-        <>
-            <div>
-                <Signin />
-            </div>
-        </>
-    );
+        <div >Current User {user.user.email}</div>
+    )
+    
 }
 
 export default App;
