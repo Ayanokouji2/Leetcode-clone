@@ -4,11 +4,11 @@ import './App.css';
 import { Signin } from './Components/SignIn';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './utils/firebase';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { userAtom } from './store/atmos/users';
 
 function App() {
-    const setUser = useSetRecoilState(userAtom);
+    const [user,setUser] = useRecoilState(userAtom);
 
     useEffect(() => {
         onAuthStateChanged(auth, function (user) {
@@ -28,6 +28,10 @@ function App() {
             }
         });
     }, []);
+
+    if(user){
+        
+    }
     return (
         <>
             <div>
